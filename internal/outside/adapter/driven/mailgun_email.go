@@ -3,6 +3,7 @@ package driven
 import (
 	"context"
 	"fizz/internal/core/domain"
+	"fizz/internal/pkg/logger"
 	"github.com/mailgun/mailgun-go/v3"
 )
 
@@ -15,6 +16,7 @@ func NewMailgunEmail(client mailgun.Mailgun) *MailgunEmail {
 }
 
 func (m MailgunEmail) Send(ctx context.Context, email domain.Email) error {
-	panic("implement me")
-}
+	logger.Log.Println("email sent")
 
+	return nil
+}

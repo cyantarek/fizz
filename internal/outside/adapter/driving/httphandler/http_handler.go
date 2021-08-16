@@ -12,7 +12,7 @@ type HTTPHandler struct {
 }
 
 func (h HTTPHandler) Wire(router *mux.Router) {
-	router.HandleFunc("/ping", nil).Methods(http.MethodGet)
+	router.HandleFunc("/api/v1/send", h.send).Methods(http.MethodPost)
 }
 
 func New(emailService incoming.EmailService) *HTTPHandler {
