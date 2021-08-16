@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.8.0
 	github.com/keepeye/logrus-filename v0.0.0-20190711075016-ce01a4391dd1
+	github.com/mailgun/mailgun-go/v3 v3.6.4
 	github.com/sebest/logrusly v0.0.0-20180315190218-3235eccb8edc
 	github.com/segmentio/go-loggly v0.5.0 // indirect
 	github.com/sirupsen/logrus v1.8.1

@@ -2,13 +2,19 @@ package main
 
 import (
 	"context"
-	"fizz/internal/pkg/logger"
-	"fizz/internal/pkg/transports/http"
-	"fizz/internal/pkg/transports/middlewares"
+	"fizz/config"
+	"fizz/internal/core/application"
+	"fizz/internal/outside/adapter/driven"
+	"github.com/mailgun/mailgun-go/v3"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"fizz/internal/outside/adapter/driving/httphandler"
+	"fizz/internal/pkg/logger"
+	"fizz/internal/pkg/transports/http"
+	"fizz/internal/pkg/transports/middlewares"
 )
 
 var GitCommit string
@@ -24,6 +30,7 @@ func main() {
 	// =========================================================================
 
 	// mailgun
+	mailgunClient := mailgun.NewMailgun(config.Cfg.MailgunDomain, config.Cfg.MailgunAPIKey)
 
 	// =========================================================================
 	// Pkg Layer
@@ -32,6 +39,8 @@ func main() {
 	// =========================================================================
 	// Adapter Layer
 	// =========================================================================
+
+	mailgunEmail := driven.NewMailgunEmail(mailgunClient)
 
 	// =========================================================================
 	// Middleware Layer
@@ -42,6 +51,7 @@ func main() {
 	// =========================================================================
 	// Transport Layer
 	// =========================================================================
+
 	// http transport for web
 	httpTransport := http.New(mws)
 
@@ -49,16 +59,21 @@ func main() {
 	// Service Layer
 	// =========================================================================
 
+	emailService := application.NewEmailService(mailgunEmail)
+
 	// =========================================================================
 	// Ports Layer
 	// =========================================================================
+
+	httpHandlers := httphandler.New(emailService)
+	httpHandlers.Wire(httpTransport.Router)
 
 	// =========================================================================
 	// Transport Runner Layer
 	// =========================================================================
 
 	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGSTOP)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGSTOP)
 
 	// run http transport
 	httpTransport.Run()
