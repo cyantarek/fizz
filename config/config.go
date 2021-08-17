@@ -5,25 +5,14 @@ import (
 )
 
 type Config struct {
-	HttpPort          string
-	GRPCPort          string
-	APIPort           string
-	TLSCertFile       string
-	TLSKeyFile        string
-	DBHost            string
-	DBPort            string
-	DBName            string
-	DBUser            string
-	DBPassword        string
-	JWTSecret         string
-	JWTRefreshSecret  string
-	MailgunDomain     string
-	MailgunAPIKey     string
-	AuthSkipper       map[string]bool
-	GCPServiceAccount string
-	GRPCWebHost       string
-	GRPCWebPort       string
-	GraphQLPort       string
+	HttpPort       string
+	TLSCertFile    string
+	TLSKeyFile     string
+	EmailBackend   string
+	MailgunDomain  string
+	MailgunAPIKey  string
+	SendgridAPIKey string
+	AuthSkipper    map[string]bool
 }
 
 func EnvOrDefault(key, defaultValue string) string {

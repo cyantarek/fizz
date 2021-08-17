@@ -77,7 +77,7 @@ func (h *HTTP) Shutdown(ctx context.Context) {
 
 	err := h.server.Shutdown(ctx)
 	if err != nil {
-		log.Println(err)
+		logger.Log.Println(err)
 	}
 
 	logger.Log.Println("HTTP REST server terminated")

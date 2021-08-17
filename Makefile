@@ -22,7 +22,8 @@ deploy-manual:
 	ssh ubuntu@3.17.133.93 'cd /home/ubuntu/lowdly-app && git pull origin master && make docker-compose'
 
 dockerize:
-	docker build -t tarek5/go-standard-boilerplate .
+	docker build -t tarek5/fizz .
+	docker push tarek5/fizz:latest
 
 run-docker-db:
 	docker-compose -f docker-compose.dev.yml up -d db-redis db-postgres pgadmin redisadmin
@@ -90,3 +91,9 @@ scaffold:
 
 	cp $$HOME/boilerplate/config.txt config/config.go
 	cp $$HOME/boilerplate/config_instance.txt config/config_instance.go
+
+deploy-helm:
+	helm install --generate-name fizzcharts/
+
+delete-helm:
+	helm ls --all --short | xargs -L1 helm delete

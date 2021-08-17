@@ -8,16 +8,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 	"golang.org/x/time/rate"
-
-	"fizz/config"
-	"fizz/internal/pkg/jwtpacker"
 )
 
 type Middleware struct {
@@ -122,57 +117,6 @@ func (mw Middleware) PanicRecoveryMWHTTP(h http.Handler) http.Handler {
 
 		h.ServeHTTP(w, r)
 
-	})
-}
-
-func (mw Middleware) AuthMWHTTP(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "/static/") {
-			h.ServeHTTP(w, r)
-			return
-		}
-
-		if config.Cfg.AuthSkipper[r.URL.Path] {
-			h.ServeHTTP(w, r)
-			return
-		}
-
-		// extract token from header
-		token := r.Header.Get("Authorization")
-
-		if token == "" {
-			cook, err := r.Cookie("token")
-			if err != nil {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-
-			token = cook.Value
-		}
-
-		tokenParts := strings.Split(token, " ")
-
-		if len(tokenParts) != 2 {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		if valid, claims := jwtpacker.ValidateToken(tokenParts[1]); valid {
-			if email, ok := claims["email"]; ok {
-				//r.Header.Set("Grpc-Metadata-Email", email.(string))
-				//r.Header.Set("Grpc-Metadata-Token", tokenParts[1])
-
-				ctx := context.WithValue(r.Context(), "email", email.(string))
-
-				h.ServeHTTP(w, r.WithContext(ctx))
-			} else {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-		} else {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
 	})
 }
 

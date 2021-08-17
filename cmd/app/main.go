@@ -5,11 +5,14 @@ import (
 	"fizz/config"
 	"fizz/internal/core/application"
 	"fizz/internal/outside/adapter/driven"
-	"github.com/mailgun/mailgun-go/v3"
+
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
+
+	"github.com/mailgun/mailgun-go/v3"
 
 	"fizz/internal/outside/adapter/driving/httphandler"
 	"fizz/internal/pkg/logger"
@@ -24,6 +27,10 @@ func main() {
 	logger.Log.Println("Git tag ver:", GitCommit)
 
 	_ = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	if config.Cfg.EmailBackend != "mailgun" {
+		logger.Log.Fatal("invalid email backend")
+	}
 
 	// =========================================================================
 	// 3rd Party Services Layer
@@ -72,9 +79,6 @@ func main() {
 	// Transport Runner Layer
 	// =========================================================================
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGSTOP)
-
 	// run http transport
 	httpTransport.Run()
 
@@ -82,8 +86,14 @@ func main() {
 	// Transport Halting Layer
 	// =========================================================================
 
-	shutdownCtx := context.Background()
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	<-sigChan
+	recv := <-sigChan
+	logger.Log.Println(recv.String())
+	logger.Log.Println(recv.Signal)
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
 	httpTransport.Shutdown(shutdownCtx)
 }

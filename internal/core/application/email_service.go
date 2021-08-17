@@ -22,7 +22,10 @@ func (e EmailService) Send(ctx context.Context, email dto.SendEmail) error {
 	subject := domain.NewSubject(email.Subject)
 	body := domain.NewMessageBody(email.Body)
 
-	emailDomain := domain.NewEmail(from, to, nil, subject, body)
+	emailDomain, err := domain.NewEmail(from, to, nil, subject, body)
+	if err != nil {
+		return err
+	}
 
 	return e.sender.Send(ctx, emailDomain)
 }
