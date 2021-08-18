@@ -5,6 +5,7 @@ import (
 	"fizz/config"
 	"fizz/internal/core/application"
 	"fizz/internal/outside/adapter/driven"
+	"fmt"
 
 	"log"
 	"os"
@@ -12,6 +13,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/mailgun/mailgun-go/v3"
 
 	"fizz/internal/outside/adapter/driving/httphandler"
@@ -43,6 +46,16 @@ func main() {
 	// mailgun
 	mailgunClient := mailgun.NewMailgun(config.Cfg.MailgunDomain, config.Cfg.MailgunAPIKey)
 
+	sqlClient, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", config.Cfg.DBHost, config.Cfg.DBPort, config.Cfg.DBUsername, config.Cfg.DBPassword, config.Cfg.DBName, "disable"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = sqlClient.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// =========================================================================
 	// Pkg Layer
 	// =========================================================================
@@ -52,6 +65,7 @@ func main() {
 	// =========================================================================
 
 	mailgunEmail := driven.NewMailgunEmail(mailgunClient)
+	postgresEmailRepository := driven.NewEmailPostgres(sqlClient)
 
 	// =========================================================================
 	// Middleware Layer
@@ -70,7 +84,7 @@ func main() {
 	// Service Layer
 	// =========================================================================
 
-	emailService := application.NewEmailService(mailgunEmail)
+	emailService := application.NewEmailService(mailgunEmail, postgresEmailRepository)
 
 	// =========================================================================
 	// Ports Layer

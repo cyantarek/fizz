@@ -1,11 +1,43 @@
 package domain
 
 type Email struct {
-	from        EmailAddress
-	to          []EmailAddress
-	cc          []EmailAddress
-	subject     Subject
-	messageBody MessageBody
+	id           EmailID
+	referenceID  EmailID
+	from         EmailAddress
+	to           []EmailAddress
+	cc           []EmailAddress
+	subject      Subject
+	messageBody  MessageBody
+	status       Status
+	emailBackend EmailBackend
+}
+
+func (e *Email) Id() EmailID {
+	return e.id
+}
+
+func (e *Email) ReferenceID() EmailID {
+	return e.referenceID
+}
+
+func (e *Email) Status() Status {
+	return e.status
+}
+
+func (e *Email) EmailBackend() EmailBackend {
+	return e.emailBackend
+}
+
+func (e *Email) SetEmailBackend(emailBackend EmailBackend) {
+	e.emailBackend = emailBackend
+}
+
+func (e *Email) SetReferenceID(referenceID EmailID) {
+	e.referenceID = referenceID
+}
+
+func (e *Email) MarkAsQueued() {
+	e.status = QUEUED
 }
 
 func (e *Email) From() EmailAddress {
@@ -40,7 +72,7 @@ func (e *Email) SetMessageBody(messageBody MessageBody) {
 	e.messageBody = messageBody
 }
 
-func NewEmail(from EmailAddress, to []EmailAddress, cc []EmailAddress, subject Subject, messageBody MessageBody) (Email, error) {
+func NewEmail(id EmailID, from EmailAddress, to []EmailAddress, cc []EmailAddress, subject Subject, messageBody MessageBody) (Email, error) {
 	if !from.valid() {
 		return Email{}, errInvalidFrom
 	}
@@ -53,5 +85,5 @@ func NewEmail(from EmailAddress, to []EmailAddress, cc []EmailAddress, subject S
 		return Email{}, errInvalidTo
 	}
 
-	return Email{from: from, to: to, cc: cc, subject: subject, messageBody: messageBody}, nil
+	return Email{id: id, from: from, to: to, cc: cc, subject: subject, messageBody: messageBody}, nil
 }

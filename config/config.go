@@ -6,13 +6,15 @@ import (
 
 type Config struct {
 	HttpPort       string
-	TLSCertFile    string
-	TLSKeyFile     string
 	EmailBackend   string
 	MailgunDomain  string
 	MailgunAPIKey  string
 	SendgridAPIKey string
-	AuthSkipper    map[string]bool
+	DBHost         string
+	DBPort         string
+	DBUsername     string
+	DBPassword     string
+	DBName         string
 }
 
 func EnvOrDefault(key, defaultValue string) string {

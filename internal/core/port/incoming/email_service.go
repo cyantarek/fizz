@@ -6,5 +6,5 @@ import (
 )
 
 type EmailService interface {
-	Send(ctx context.Context, email dto.SendEmail) error
+	Send(ctx context.Context, email dto.SendEmail, backend string) error
 }

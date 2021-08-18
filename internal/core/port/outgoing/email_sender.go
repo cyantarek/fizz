@@ -6,5 +6,5 @@ import (
 )
 
 type EmailSender interface {
-	Send(ctx context.Context, email domain.Email) error
+	Send(ctx context.Context, email domain.Email) (domain.EmailID, error)
 }
