@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment # ReplicaSet
+kind: Deployment
 metadata:
   name: fizz-dp
 spec:
