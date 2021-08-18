@@ -5,6 +5,7 @@ import (
 	"fizz/internal/core/domain"
 	"fizz/internal/pkg/logger"
 	"github.com/mailgun/mailgun-go/v3"
+	"time"
 )
 
 type MailgunEmail struct {
@@ -22,15 +23,19 @@ func (m MailgunEmail) Send(ctx context.Context, email domain.Email) error {
 		to = append(to, v.Address())
 	}
 
-	mgEmail := m.client.NewMessage(email.From().Address(), email.Subject().Value(), email.MessageBody().Value(), to...)
-
 	go func() {
+		mgEmail := m.client.NewMessage(email.From().Address(), email.Subject().Value(), email.MessageBody().Value(), to...)
+
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+
 		resp, id, err := m.client.Send(ctx, mgEmail)
 		if err != nil {
 			logger.Log.Error("email send unsuccessful [resp] [id] -> ", err.Error())
+			return
 		}
 
-		logger.Log.Info("email send successfully [resp] [id] -> ", resp, id)
+		logger.Log.Info("email queue successful [resp] [id] -> ", resp, id)
 	}()
 
 	return nil

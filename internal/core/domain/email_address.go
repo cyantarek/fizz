@@ -13,9 +13,5 @@ func (e EmailAddress) Address() string {
 }
 
 func (e EmailAddress) valid() bool {
-	if e.address == "" {
-		return false
-	}
-
-	return true
+	return e.address != ""
 }

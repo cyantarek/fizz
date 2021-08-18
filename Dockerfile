@@ -1,9 +1,16 @@
-FROM golang:latest
+FROM golang:latest as builder
 ARG BIN_NAME=app
-COPY . /$BIN_NAME
-WORKDIR /$BIN_NAME
-RUN CGO_ENABLED=0 GOOS=linux GIT_COMMIT=$(git rev-list -1 HEAD) go build -ldflags "-X main.GitCommit=$GIT_COMMIT" -o $BIN_NAME ./cmd/$BIN_NAME
+WORKDIR /app
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/$BIN_NAME
+
+FROM alpine:latest
+ARG BIN_NAME=main
+WORKDIR /root/
+#RUN apk --no-cache add ca-certificates
+COPY --from=builder /app/main .
+COPY --from=builder /app/config .
 
 EXPOSE 5000
 
-CMD [ "./app" ]
+CMD [ "./main" ]

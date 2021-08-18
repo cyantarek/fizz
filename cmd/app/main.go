@@ -28,8 +28,12 @@ func main() {
 
 	_ = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	if config.Cfg.EmailBackend != "mailgun" {
+	if config.Cfg.EmailBackend != "" && config.Cfg.EmailBackend != "mailgun" {
 		logger.Log.Fatal("invalid email backend")
+	}
+
+	if config.Cfg.EmailBackend != "" {
+		logger.Log.Info("no email backend set. Defaulting to mailgun")
 	}
 
 	// =========================================================================

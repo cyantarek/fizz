@@ -15,8 +15,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-type Middleware struct {
-}
+type Middleware struct {}
 
 func (mw Middleware) CorsMWHTTP(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

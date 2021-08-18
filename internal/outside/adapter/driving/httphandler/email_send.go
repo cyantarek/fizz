@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fizz/internal/core/application/dto"
 	"fizz/internal/pkg/logger"
-
 	"net/http"
 )
 
@@ -23,27 +22,33 @@ type sendResponse struct {
 func (h HTTPHandler) send(w http.ResponseWriter, r *http.Request) {
 	var in sendRequest
 
-	json.NewDecoder(r.Body).Decode(&in)
-
-	logger.Log.Println("request received")
-
-	err := h.emailService.Send(r.Context(), dto.SendEmail{
-		From:    in.From,
-		To:      in.To,
-		Cc:      in.Cc,
-		Subject: in.Subject,
-		Body:    in.Body,
-	})
-
+	err := json.NewDecoder(r.Body).Decode(&in)
 	if err != nil {
-		json.NewEncoder(w).Encode(sendResponse{
+		h.errorJSON(w, sendResponse{
 			Message: err.Error(),
 		})
 
 		return
 	}
 
-	json.NewEncoder(w).Encode(sendResponse{
-		Message: "email sent successfully [mock]",
+	logger.Log.Println("request received")
+
+	err = h.emailService.Send(r.Context(), dto.SendEmail{
+		From:    in.From,
+		To:      in.To,
+		Cc:      in.Cc,
+		Subject: in.Subject,
+		Body:    in.Body,
+	})
+	if err != nil {
+		h.errorJSON(w, sendResponse{
+			Message: err.Error(),
+		})
+
+		return
+	}
+
+	h.successJSON(w, sendResponse{
+		Message: "email queued successfully",
 	})
 }
