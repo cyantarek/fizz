@@ -17,6 +17,7 @@ type sendRequest struct {
 
 type sendResponse struct {
 	Message string `json:"message"`
+	ID      string `json:"id"`
 }
 
 type lookupResponse struct {
@@ -32,7 +33,7 @@ const (
 )
 
 func (h HTTPHandler) lookupStatus(e echo.Context) error {
-	emailID := e.FormValue("id")
+	emailID := e.Param("id")
 
 	emailLookup, err := h.emailService.LookupStatus(e.Request().Context(), emailID)
 	if err != nil {
@@ -58,7 +59,7 @@ func (h HTTPHandler) send(e echo.Context) error {
 
 	logger.Log.Println("request received")
 
-	err = h.emailService.Send(e.Request().Context(), dto.SendEmail{
+	id, err := h.emailService.Send(e.Request().Context(), dto.SendEmail{
 		From:    in.From,
 		To:      in.To,
 		Cc:      in.Cc,
@@ -71,5 +72,6 @@ func (h HTTPHandler) send(e echo.Context) error {
 
 	return e.JSON(200, sendResponse{
 		Message: "email queued successfully",
+		ID:      id,
 	})
 }

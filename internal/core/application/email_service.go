@@ -36,7 +36,7 @@ func (e EmailService) LookupStatus(ctx context.Context, id string) (*dto.LookupE
 	return &out, nil
 }
 
-func (e EmailService) Send(ctx context.Context, email dto.SendEmail, backend string) error {
+func (e EmailService) Send(ctx context.Context, email dto.SendEmail, backend string) (string, error) {
 	// build the domain model from dto
 	from := domain.NewEmailAddress(email.From)
 
@@ -52,7 +52,7 @@ func (e EmailService) Send(ctx context.Context, email dto.SendEmail, backend str
 
 	emailDomain, err := domain.NewEmail(emailID, from, to, nil, subject, body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	emailDomain.SetEmailBackend(domain.EmailBackend(backend))
@@ -88,7 +88,7 @@ func (e EmailService) Send(ctx context.Context, email dto.SendEmail, backend str
 
 	logger.Log.Info("Email queued successfully")
 
-	return nil
+	return emailID.String(), nil
 }
 
 func NewEmailService(sender outgoing.EmailSender, repository outgoing.EmailRepository) *EmailService {

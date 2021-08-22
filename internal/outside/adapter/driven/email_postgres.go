@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"strings"
 )
 
 type EmailPostgres struct {
@@ -86,7 +87,8 @@ func (e EmailPostgres) LookupStatus(ctx context.Context, emailID domain.ID) (*do
 }
 
 func (e EmailPostgres) NextEmailID(ctx context.Context) domain.ID {
-	return domain.NewID(uuid.NewString())
+	uid := strings.Replace(uuid.NewString(), "-", "", -1)
+	return domain.NewID(uid)
 }
 
 func NewEmailPostgres(client *sqlx.DB) *EmailPostgres {
