@@ -37,7 +37,7 @@ func (e EmailPostgres) Store(ctx context.Context, email domain.Email) error {
 		to = append(to, v.Address())
 	}
 
-	var emailEntity = emailPostgres{
+	result, err := e.client.NamedExecContext(ctx, insertQuery, emailPostgres{
 		ID:           email.Id().String(),
 		ReferenceID:  email.ReferenceID().String(),
 		From:         email.From().Address(),
@@ -46,9 +46,7 @@ func (e EmailPostgres) Store(ctx context.Context, email domain.Email) error {
 		Body:         email.MessageBody().Value(),
 		Status:       int(email.Status()),
 		EmailBackend: string(email.EmailBackend()),
-	}
-
-	result, err := e.client.NamedExecContext(ctx, insertQuery, emailEntity)
+	})
 	if err != nil {
 		return err
 	}
