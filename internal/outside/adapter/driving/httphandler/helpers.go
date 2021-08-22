@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-func (h HTTPHandler) errorJSON(w http.ResponseWriter, data interface{}) {
+func (h HTTPHandler) errorJSON(w http.ResponseWriter, data interface{}, status int) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
+	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(data)
 }
 

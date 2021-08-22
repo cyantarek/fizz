@@ -3,6 +3,7 @@ module fizz
 go 1.16
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/keepeye/logrus-filename v0.0.0-20190711075016-ce01a4391dd1

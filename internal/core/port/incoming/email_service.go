@@ -7,4 +7,5 @@ import (
 
 type EmailService interface {
 	Send(ctx context.Context, email dto.SendEmail, backend string) error
+	LookupStatus(ctx context.Context, id string) (*dto.LookupEmail, error)
 }

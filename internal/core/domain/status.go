@@ -2,9 +2,13 @@ package domain
 
 type Status int
 
-const (
-	QUEUED Status = iota
-	SENT
-	FAILED
-	UNKNOWN
-)
+var statusMap = map[Status]string{
+	0: "QUEUED",
+	1: "SENT",
+	2: "FAILED",
+	3: "UNKNOWN",
+}
+
+func (s Status) String() string {
+	return statusMap[s]
+}

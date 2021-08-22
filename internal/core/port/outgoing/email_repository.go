@@ -7,6 +7,6 @@ import (
 
 type EmailRepository interface {
 	Store(ctx context.Context, email domain.Email) error
-	LookupStatus(ctx context.Context, emailID domain.EmailID) (*domain.Email, error)
-	NextEmailID(ctx context.Context) domain.EmailID
+	LookupStatus(ctx context.Context, emailID domain.ID) (*domain.Email, error)
+	NextEmailID(ctx context.Context) domain.ID
 }

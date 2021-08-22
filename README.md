@@ -9,7 +9,7 @@ Basic Features
 
 Extended features
 
-1. Reliability: retry, timeout, fallback
+1. Reliability: retry, timeout, fallback, panic recover, rollback
 2. webhook events
 3. database
 4. update db according to webhook events

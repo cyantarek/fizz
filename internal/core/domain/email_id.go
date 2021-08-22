@@ -1,13 +1,13 @@
 package domain
 
-type EmailID struct {
+type ID struct {
 	id string
 }
 
-func (e EmailID) String() string {
+func (e ID) String() string {
 	return e.id
 }
 
-func NewEmailID(id string) EmailID {
-	return EmailID{id: id}
+func NewID(id string) ID {
+	return ID{id: id}
 }

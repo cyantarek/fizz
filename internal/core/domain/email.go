@@ -1,8 +1,8 @@
 package domain
 
 type Email struct {
-	id           EmailID
-	referenceID  EmailID
+	id           ID
+	referenceID  ID
 	from         EmailAddress
 	to           []EmailAddress
 	cc           []EmailAddress
@@ -12,11 +12,11 @@ type Email struct {
 	emailBackend EmailBackend
 }
 
-func (e *Email) Id() EmailID {
+func (e *Email) Id() ID {
 	return e.id
 }
 
-func (e *Email) ReferenceID() EmailID {
+func (e *Email) ReferenceID() ID {
 	return e.referenceID
 }
 
@@ -32,12 +32,12 @@ func (e *Email) SetEmailBackend(emailBackend EmailBackend) {
 	e.emailBackend = emailBackend
 }
 
-func (e *Email) SetReferenceID(referenceID EmailID) {
+func (e *Email) SetReferenceID(referenceID ID) {
 	e.referenceID = referenceID
 }
 
 func (e *Email) MarkAsQueued() {
-	e.status = QUEUED
+	e.status = 0
 }
 
 func (e *Email) From() EmailAddress {
@@ -72,7 +72,7 @@ func (e *Email) SetMessageBody(messageBody MessageBody) {
 	e.messageBody = messageBody
 }
 
-func NewEmail(id EmailID, from EmailAddress, to []EmailAddress, cc []EmailAddress, subject Subject, messageBody MessageBody) (Email, error) {
+func NewEmail(id ID, from EmailAddress, to []EmailAddress, cc []EmailAddress, subject Subject, messageBody MessageBody) (Email, error) {
 	if !from.valid() {
 		return Email{}, errInvalidFrom
 	}

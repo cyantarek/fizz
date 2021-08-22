@@ -7,6 +7,8 @@ import (
 
 func (h HTTPHandler) Wire(router *mux.Router) {
 	router.HandleFunc("/api/v1/send", h.send).Methods(http.MethodPost)
+	router.HandleFunc("/api/v1/lookup", h.lookupStatus).Methods(http.MethodGet)
+
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("healthy\n"))
 	}).Methods(http.MethodGet)

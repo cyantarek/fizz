@@ -46,7 +46,7 @@ func main() {
 	// mailgun
 	mailgunClient := mailgun.NewMailgun(config.Cfg.MailgunDomain, config.Cfg.MailgunAPIKey)
 
-	sqlClient, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", config.Cfg.DBHost, config.Cfg.DBPort, config.Cfg.DBUsername, config.Cfg.DBPassword, config.Cfg.DBName, "disable"))
+	sqlClient, err := sqlx.Open("postgres", fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", config.Cfg.DBUsername, config.Cfg.DBPassword, config.Cfg.DBHost, config.Cfg.DBPort, config.Cfg.DBName, "disable"))
 	if err != nil {
 		log.Fatal(err)
 	}

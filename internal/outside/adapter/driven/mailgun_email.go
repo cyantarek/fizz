@@ -12,11 +12,15 @@ type MailgunEmail struct {
 	client mailgun.Mailgun
 }
 
+func (m MailgunEmail) Name() string {
+	return "MAILGUN"
+}
+
 func NewMailgunEmail(client mailgun.Mailgun) *MailgunEmail {
 	return &MailgunEmail{client: client}
 }
 
-func (m MailgunEmail) Send(ctx context.Context, email domain.Email) (domain.EmailID, error) {
+func (m MailgunEmail) Send(ctx context.Context, email domain.Email) (domain.ID, error) {
 	var to []string
 
 	for _, v := range email.To() {
@@ -31,10 +35,10 @@ func (m MailgunEmail) Send(ctx context.Context, email domain.Email) (domain.Emai
 	resp, id, err := m.client.Send(ctx, mgEmail)
 	if err != nil {
 		logger.Log.Error("email send unsuccessful [resp] [id] -> ", err.Error())
-		return domain.NewEmailID(id), err
+		return domain.NewID(id), err
 	}
 
 	logger.Log.Info("email queue successful [resp] [id] -> ", resp, id)
 
-	return domain.NewEmailID(id), nil
+	return domain.NewID(id), nil
 }
