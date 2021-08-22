@@ -5,6 +5,7 @@ import (
 	"fizz/config"
 	"fizz/internal/core/application"
 	"fizz/internal/outside/adapter/driven"
+	"fizz/internal/pkg/transports/echohttp"
 	"fmt"
 
 	"log"
@@ -19,8 +20,6 @@ import (
 
 	"fizz/internal/outside/adapter/driving/httphandler"
 	"fizz/internal/pkg/logger"
-	"fizz/internal/pkg/transports/http"
-	"fizz/internal/pkg/transports/middlewares"
 )
 
 var GitCommit string
@@ -71,14 +70,12 @@ func main() {
 	// Middleware Layer
 	// =========================================================================
 
-	mws := middlewares.NewMiddleware()
-
 	// =========================================================================
 	// Transport Layer
 	// =========================================================================
 
-	// http transport for web
-	httpTransport := http.New(mws)
+	// http transport for web: echo
+	httpTransport := echohttp.New()
 
 	// =========================================================================
 	// Service Layer

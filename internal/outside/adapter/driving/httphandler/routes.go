@@ -1,15 +1,14 @@
 package httphandler
 
 import (
-	"github.com/gorilla/mux"
-	"net/http"
+	"github.com/labstack/echo/v4"
 )
 
-func (h HTTPHandler) Wire(router *mux.Router) {
-	router.HandleFunc("/api/v1/send", h.send).Methods(http.MethodPost)
-	router.HandleFunc("/api/v1/lookup", h.lookupStatus).Methods(http.MethodGet)
+func (h HTTPHandler) Wire(router *echo.Echo) {
+	router.POST("/api/v1/send", h.send)
+	router.GET("/api/v1/lookup", h.lookupStatus)
 
-	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("healthy\n"))
-	}).Methods(http.MethodGet)
+	router.GET("/health", func(ctx echo.Context) error {
+		return ctx.String(200, "healthy")
+	})
 }

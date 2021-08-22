@@ -1,9 +1,9 @@
 package httphandler
 
 import (
-	"encoding/json"
 	"fizz/internal/core/application/dto"
 	"fizz/internal/pkg/logger"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
@@ -31,45 +31,34 @@ const (
 	MAILGUN = "MAILGUN"
 )
 
-func (h HTTPHandler) lookupStatus(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		h.errorJSON(w, sendResponse{
-			Message: err.Error(),
-		}, http.StatusBadRequest)
+func (h HTTPHandler) lookupStatus(e echo.Context) error {
+	emailID := e.FormValue("id")
 
-		return
+	emailLookup, err := h.emailService.LookupStatus(e.Request().Context(), emailID)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	emailID := r.FormValue("id")
-
-	emailLookup, err := h.emailService.LookupStatus(r.Context(), emailID)
-	if err != nil {
-		h.errorJSON(w, sendResponse{
-			Message: err.Error(),
-		}, http.StatusBadRequest)
-
-		return
-	}
-
-	h.successJSON(w, emailLookup)
+	return e.JSON(200, lookupResponse{
+		ID:           emailLookup.ID,
+		From:         emailLookup.From,
+		To:           emailLookup.To,
+		EmailBackend: emailLookup.EmailBackend,
+		Status:       emailLookup.Status,
+	})
 }
 
-func (h HTTPHandler) send(w http.ResponseWriter, r *http.Request) {
+func (h HTTPHandler) send(e echo.Context) error {
 	var in sendRequest
 
-	err := json.NewDecoder(r.Body).Decode(&in)
+	err := e.Bind(&in)
 	if err != nil {
-		h.errorJSON(w, sendResponse{
-			Message: err.Error(),
-		}, http.StatusBadRequest)
-
-		return
+		return e.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	logger.Log.Println("request received")
 
-	err = h.emailService.Send(r.Context(), dto.SendEmail{
+	err = h.emailService.Send(e.Request().Context(), dto.SendEmail{
 		From:    in.From,
 		To:      in.To,
 		Cc:      in.Cc,
@@ -77,14 +66,10 @@ func (h HTTPHandler) send(w http.ResponseWriter, r *http.Request) {
 		Body:    in.Body,
 	}, MAILGUN)
 	if err != nil {
-		h.errorJSON(w, sendResponse{
-			Message: err.Error(),
-		}, http.StatusInternalServerError)
-
-		return
+		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	h.successJSON(w, sendResponse{
+	return e.JSON(200, sendResponse{
 		Message: "email queued successfully",
 	})
 }

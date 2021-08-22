@@ -7,6 +7,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/keepeye/logrus-filename v0.0.0-20190711075016-ce01a4391dd1
+	github.com/labstack/echo/v4 v4.5.0 // indirect
 	github.com/lib/pq v1.10.2
 	github.com/mailgun/mailgun-go/v3 v3.6.4
 	github.com/sebest/logrusly v0.0.0-20180315190218-3235eccb8edc
