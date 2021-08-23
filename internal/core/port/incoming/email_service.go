@@ -9,3 +9,7 @@ type EmailService interface {
 	Send(ctx context.Context, email dto.SendEmail, backend string) (string, error)
 	LookupStatus(ctx context.Context, id string) (*dto.LookupEmail, error)
 }
+
+type MarketingService interface {
+	GetCompleteStats(ctx context.Context) ([]dto.Stats, error)
+}

@@ -5,6 +5,7 @@ import (
 	"fizz/config"
 	"fizz/internal/pkg/logger"
 	"fmt"
+	"github.com/labstack/echo-contrib/prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -20,6 +21,9 @@ func New() *EchoHTTP {
 
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
+
+	prom := prometheus.NewPrometheus("fizz", nil)
+	prom.Use(e)
 
 	return &EchoHTTP{Router: e}
 }

@@ -1,4 +1,4 @@
-.PHONY: proto kubernetes-redeploy
+.PHONY: proto kubernetes-redeploy prometheus
 
 APP_NAME?=saas
 CORE_DEPLOYMENT?=saas-deployment
@@ -97,3 +97,10 @@ deploy-helm:
 
 delete-helm:
 	helm ls --all --short | xargs -L1 helm delete
+
+prometheus:
+	cp prometheus-fizz.yaml /tmp
+	docker run -d -p 9090:9090 -v /tmp:/etc/prometheus prom/prometheus --config.file=/etc/prometheus/prometheus-fizz.yaml --storage.tsdb.path=/prometheus --web.console.libraries=/usr/share/prometheus/console_libraries --web.console.templates=/usr/share/prometheus/consoles
+
+grafana:
+	docker run -d -p 3000:3000 grafana/grafana

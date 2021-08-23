@@ -82,12 +82,13 @@ func main() {
 	// =========================================================================
 
 	emailService := application.NewEmailService(mailgunEmail, postgresEmailRepository)
+	marketingService := application.NewMarketingService(mailgunEmail)
 
 	// =========================================================================
 	// Ports Layer
 	// =========================================================================
 
-	httpHandlers := httphandler.New(emailService)
+	httpHandlers := httphandler.New(emailService, marketingService)
 	httpHandlers.Wire(httpTransport.Router)
 
 	// =========================================================================

@@ -12,6 +12,44 @@ type MailgunEmail struct {
 	client mailgun.Mailgun
 }
 
+func (m MailgunEmail) GetStats(ctx context.Context) ([]domain.Stats, error) {
+	evs := []string{
+		"accepted",
+		"delivered",
+		"failed",
+		"opened",
+		"clicked",
+		"unsubscribed",
+		"complained",
+		"stored",
+	}
+
+	stats, err := m.client.GetStats(ctx, evs, &mailgun.GetStatOptions{
+		Resolution: "month",
+		Duration:   "1m",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var out []domain.Stats
+
+	for _, stat := range stats {
+		out = append(out, domain.Stats{
+			Accepted:     stat.Accepted.Total,
+			Delivered:    stat.Delivered.Total,
+			Failed:       stat.Failed.Permanent.Total,
+			Stored:       stat.Stored.Total,
+			Opened:       stat.Opened.Total,
+			Clicked:      stat.Clicked.Total,
+			Unsubscribed: stat.Unsubscribed.Total,
+			Complained:   stat.Complained.Total,
+		})
+	}
+
+	return out, err
+}
+
 func (m MailgunEmail) Name() string {
 	return "MAILGUN"
 }

@@ -5,9 +5,10 @@ import (
 )
 
 type HTTPHandler struct {
-	emailService incoming.EmailService
+	emailService     incoming.EmailService
+	marketingService incoming.MarketingService
 }
 
-func New(emailService incoming.EmailService) *HTTPHandler {
-	return &HTTPHandler{emailService: emailService}
+func New(emailService incoming.EmailService, marketingService incoming.MarketingService) *HTTPHandler {
+	return &HTTPHandler{emailService: emailService, marketingService: marketingService}
 }

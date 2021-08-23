@@ -75,3 +75,12 @@ func (h HTTPHandler) send(e echo.Context) error {
 		ID:      id,
 	})
 }
+
+func (h HTTPHandler) getStats(e echo.Context) error {
+	stats, err := h.marketingService.GetCompleteStats(e.Request().Context())
+	if err != nil {
+		return err
+	}
+
+	return e.JSON(200, stats)
+}
