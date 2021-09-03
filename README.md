@@ -17,3 +17,4 @@ Extended features
 6. HTML Email
 7. email sending status lookup
 8. Observability: Metrics, Logging, Traces
+9. Writing Tests

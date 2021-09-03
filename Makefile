@@ -104,3 +104,10 @@ prometheus:
 
 grafana:
 	docker run -d -p 3000:3000 grafana/grafana
+
+loki:
+	cp loki-config.yaml /tmp
+	cp promtail-config.yaml /tmp
+	docker run -v /tmp:/mnt/config -p 3100:3100 grafana/loki -config.file=/mnt/config/loki-config.yaml
+	docker run -v /tmp:/mnt/config -v /var/log:/var/log grafana/promtail -config.file=/mnt/config/promtail-config.yaml
+
