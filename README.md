@@ -1,4 +1,19 @@
-Basic Features
+# fizz - pluggable email delivery/notifications microservice written in Go
+
+Email sending is fairly general thing in the development world. It's often repetitive and time consuming to write it again and again.
+This microservice is stateless and pluggable that can be hooked up into any microservices.
+
+Written in Go, with optional Postgres persistence layer [WIP], you can deploy it to your Kubernetes cluster
+
+This repo also features a complete terraform suite to provision a blank, fresh EKS cluster that can be used to deploy your services.
+
+### WIP
+
+1. Github Actions CI/CD Pipeline
+2. Unit testing and test coverage
+3. Helm charts
+
+### Basic Features
 
 1. Send email
 2. Mailgun Backend
@@ -7,7 +22,7 @@ Basic Features
 5. Terraform AWS
 6. Terraform EKS Deployment
 
-Extended features
+### Extended features
 
 1. Reliability: retry, timeout, fallback, panic recover, rollback
 2. webhook events
