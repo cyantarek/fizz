@@ -1,4 +1,4 @@
-# fizz - pluggable email delivery/notifications microservice written in Go
+# fizz - pluggable email delivery/notifications microservice written in Go :rocket:
 
 Email sending is fairly general thing in the development world. It's often repetitive and time consuming to write it again and again.
 This microservice is stateless and pluggable that can be hooked up into any microservices.
@@ -7,7 +7,7 @@ Written in Go, with optional Postgres persistence layer [WIP], you can deploy it
 
 This repo also features a complete terraform suite to provision a blank, fresh EKS cluster that can be used to deploy your services.
 
-### WIP
+### WIP :heart_eyes:
 
 1. Github Actions CI/CD Pipeline
 2. Unit testing and test coverage
