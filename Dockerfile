@@ -1,16 +1,19 @@
-FROM golang:latest as builder
-ARG BIN_NAME=app
+FROM golang:1.18-alpine as builder
+
+ARG serviceName=fizz
+ARG version
+
+COPY . /app
 WORKDIR /app
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/$BIN_NAME
+RUN GOOS=linux GOARCH=amd64 go build -o survitec-api -ldflags="-s -w" github.com/cyantarek/fizz/cmd/fizz
 
 FROM alpine:latest
-ARG BIN_NAME=main
-WORKDIR /root/
-#RUN apk --no-cache add ca-certificates
-COPY --from=builder /app/main .
-COPY --from=builder /app/config .
 
-EXPOSE 5000
+## should be declared twice due to different build stages
+ARG serviceName=fizz
 
-CMD [ "./main" ]
+COPY --from=builder /app/$serviceName /$serviceName
+WORKDIR /
+ENTRYPOINT ["/fizz"]
+
+EXPOSE 8000

@@ -36,7 +36,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: fizz-secrets
-                  key: mailgun-domain
+                  key: mailgun-domains
             - name: MAILGUN_API_KEY
               valueFrom:
                 secretKeyRef:
